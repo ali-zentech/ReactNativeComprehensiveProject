@@ -33,10 +33,7 @@ import {
 import Login from './src/screens/Login';
 import Signup from './src/screens/Signup';
 import HomePage from './src/screens/HomePage';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+import TakeNote from './src/screens/TakeNote';
 
 function App(): React.JSX.Element {
   const theme = useColorScheme();
@@ -59,6 +56,11 @@ function App(): React.JSX.Element {
         <Stack.Screen
           name="HomePage"
           component={HomePage}
+          options={{headerShown: true}}
+        />
+        <Stack.Screen
+          name="TakeNote"
+          component={TakeNote}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

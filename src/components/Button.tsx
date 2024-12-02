@@ -3,12 +3,13 @@ import React from 'react';
 import {ParamListBase, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
-const Button = ({navigateTo, text}: {navigateTo: string; text: string}) => {
-  const navigator = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+const Button = ({func, text}: {func: () => void; text: string}) => {
+  function pressed() {
+    func();
+  }
+  // const navigator = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   return (
-    <TouchableOpacity
-      style={styles.container}
-      onPress={() => navigator.popTo(navigateTo)}>
+    <TouchableOpacity style={styles.container} onPress={() => pressed()}>
       <Text style={styles.textStyle}> {text}</Text>
     </TouchableOpacity>
   );

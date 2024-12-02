@@ -1,39 +1,30 @@
 import {StyleSheet, Text, TextInput, View} from 'react-native';
 import React from 'react';
-import {useTheme} from '@react-navigation/native';
 
-const Input = ({
+const MultiLineInput = ({
   value,
   setValue,
   placeHolder,
-  secure,
-  regex,
-  errorMsg,
 }: {
   value: string;
   setValue: (value: string) => void;
   placeHolder: string;
-  secure: boolean;
-  regex: RegExp;
-  errorMsg: string;
 }) => {
-  const colors = useTheme().colors;
-
   return (
     <View style={[styles.container]}>
       <TextInput
+        multiline={true}
         value={value}
         placeholder={placeHolder}
         placeholderTextColor="#000"
         onChangeText={setValue}
-        style={{color: '#000'}}
-        secureTextEntry={secure}
+        style={[styles.textInput, {color: '#000'}]}
       />
     </View>
   );
 };
 
-export default Input;
+export default MultiLineInput;
 
 const styles = StyleSheet.create({
   container: {
@@ -45,6 +36,8 @@ const styles = StyleSheet.create({
   },
   textInput: {
     color: 'black',
-    // height: '100%',
+    height: '100%',
+    textAlignVertical: 'top',
+    fontSize: 16,
   },
 });

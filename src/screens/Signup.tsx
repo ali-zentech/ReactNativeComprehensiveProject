@@ -11,18 +11,24 @@ import Input from '../components/Input';
 import Button from '../components/Button';
 import {ParamListBase, useNavigation, useTheme} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../../types';
 
 const Signup = () => {
   const colors = useTheme().colors;
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const navigator = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+  const [username, setUsername] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const navigator =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  function navigate() {
+    navigator.popTo('HomePage');
+  }
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    // <KeyboardAvoidingView
+    //   style={styles.container}
+    //   behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+    <View style={styles.container}>
       <View style={styles.headingCmponent}>
         <Text style={[styles.heading1, {color: colors.text}]}>Sign Up</Text>
         <Text style={[styles.subHeading, {color: colors.text}]}>
@@ -37,26 +43,34 @@ const Signup = () => {
             value={username}
             setValue={setUsername}
             secure={false}
+            regex={new RegExp(/^[a-zA-Z0-9]{3,}$/)}
+            errorMsg={'Username atleast 3 alphanumeric characters'}
           />
           <Input
             placeHolder="Email"
             value={email}
             setValue={setEmail}
             secure={false}
+            regex={new RegExp(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)}
+            errorMsg={'Email format incorrect'}
           />
           <Input
             placeHolder="Password"
             value={password}
             setValue={setPassword}
             secure={true}
+            regex={new RegExp(/^[a-zA-Z0-9]{6,}$/)}
+            errorMsg={'Password must be alphanumeric 6 characters'}
           />
           <Input
             placeHolder="Confirm Password"
             value={confirmPassword}
             setValue={setConfirmPassword}
             secure={true}
+            regex={new RegExp(/^[a-zA-Z0-9]{6,}$/)}
+            errorMsg={'Password must be alphanumeric 6 characters'}
           />
-          <Button navigateTo="HomePage" text="Signup Now"></Button>
+          <Button func={navigate} text="Signup Now"></Button>
         </View>
 
         <TouchableOpacity>
@@ -81,7 +95,8 @@ const Signup = () => {
           </Text>
         </TouchableOpacity>
       </View>
-    </KeyboardAvoidingView>
+    </View>
+    // </KeyboardAvoidingView>
   );
 };
 
@@ -89,16 +104,18 @@ export default Signup;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
+    height: '100%',
     padding: '10%',
     width: '100%',
     alignContent: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
   headingCmponent: {
-    flex: 2,
+    // flex: 2,
     textAlign: 'center',
+    height: '30%',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -111,7 +128,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   bodyCmponent: {
-    flex: 4,
+    // flex: 4,
+    height: 'auto',
     justifyContent: 'space-evenly',
     alignItems: 'center',
     alignContent: 'center',
@@ -123,7 +141,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   footerCmponent: {
-    flex: 2,
+    // flex: 2,
+    height: '30%',
+
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',

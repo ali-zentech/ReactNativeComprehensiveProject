@@ -4,12 +4,18 @@ import {ParamListBase, useNavigation, useTheme} from '@react-navigation/native';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../../types';
 
 const Login = () => {
   const colors = useTheme().colors;
-  const navigator = useNavigation<NativeStackNavigationProp<ParamListBase>>();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const navigator =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const [username, setUsername] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [showError, setShowError] = useState(null);
+  function navigate() {
+    navigator.popTo('HomePage');
+  }
   return (
     <View style={styles.container}>
       <View style={styles.headingCmponent}>
@@ -22,20 +28,25 @@ const Login = () => {
       </View>
 
       <View style={styles.bodyCmponent}>
+        {showError ? <Text style={styles.errorText}>{showError}</Text> : <></>}
         <View style={{width: '100%'}}>
           <Input
             placeHolder="Username"
             value={username}
             setValue={setUsername}
             secure={false}
+            regex={new RegExp(/^[a-zA-Z0-9]{3,}$/)}
+            errorMsg={'Username must be 3 characters long'}
           />
           <Input
             placeHolder="Password"
             value={password}
             setValue={setPassword}
             secure={true}
+            regex={new RegExp(/^[a-zA-Z0-9]{6,}$/)}
+            errorMsg={'Password must be alphanumeric 6 characters'}
           />
-          <Button navigateTo="HomePage" text="Login Now"></Button>
+          <Button func={navigate} text="Login Now"></Button>
         </View>
         <TouchableOpacity>
           <Text style={styles.textNavigate}> Forgot Password ?</Text>
@@ -106,4 +117,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  errorText: {},
 });
