@@ -8,53 +8,83 @@ import {
 } from '@react-navigation/native';
 import MultiLineInput from '../components/MultiLineInput';
 import Button from '../components/Button';
-import Input from '../components/Input';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {NotePramsList, RootStackParamList} from '../../types';
+import {
+  deleteNote,
+  editNote,
+  getNote,
+  saveNote,
+} from '../services/AsyncStorageNotes';
+import InlineButton from '../components/InlineButton';
 
-const TakeNote = () => {
+const AddNote = () => {
   const route = useRoute<NotePramsList>();
   const noteId = route.params.noteId;
   const colors = useTheme().colors;
-  const [noteTitle, setNoteTitle] = useState<string>('');
   const [note, setNote] = useState<string>('');
   const [errorMsg, setErrorMsg] = useState<string>('');
   const navigator =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
+  function DeleteAndNavigate() {
+    if (noteId) {
+      deleteNote(noteId).then(() => navigator.goBack());
+    }
+  }
+  function NavigateBack() {
+    if (navigator.canGoBack()) {
+      navigator.goBack();
+    }
+  }
+
   useEffect(() => {
     if (noteId) {
       try {
-        getNote(noteId);
+        getNote(noteId).then(note_attributes => {
+          if (note_attributes) {
+            setNote(note_attributes);
+          }
+          navigator.setOptions({
+            headerRight: () =>
+              noteId ? (
+                <InlineButton
+                  text={'Delete'}
+                  func={() => DeleteAndNavigate()}
+                />
+              ) : (
+                <></>
+              ),
+            headerLeft: () => (
+              <InlineButton text={'Back'} func={() => NavigateBack()} />
+            ),
+          });
+        });
       } catch (error) {}
     }
   }, []);
 
-  async function getNote(title: string) {
+  async function edit(note: string) {
     try {
-      const noteToEdit = await AsyncStorage.getItem(title);
-      if (noteToEdit) {
-        setNote(noteToEdit);
-        setNoteTitle(title);
+      if (errorMsg == '' && noteId) {
+        editNote(noteId, note);
+        navigator.pop();
       }
     } catch (error) {
       Alert.alert('Un Expected Error occured');
     }
   }
 
-  async function saveNote(note: string, title: string) {
+  async function save(note: string) {
     try {
-      if (errorMsg == '' && noteTitle != '' && noteId == '') {
-        await AsyncStorage.setItem(title + '||' + Date.now().toString(), note);
+      if (errorMsg == '' && noteId != '') {
+        saveNote(note);
         navigator.pop();
-      } else if (noteId != '') {
       }
     } catch (error) {
       Alert.alert('Un Expected Error occured');
     }
   }
-  // const navigator = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   return (
     <View style={[styles.container, {backgroundColor: colors.background}]}>
       <View style={styles.headingCmponent}>
@@ -62,41 +92,35 @@ const TakeNote = () => {
       </View>
 
       <View style={styles.bodyComponent}>
-        <Input
-          placeHolder="Title Here"
-          value={noteTitle}
-          setValue={setNoteTitle}
-          secure={false}
-          regex={new RegExp(/^[a-zA-Z0-9]{3,}$/)}
-          errorMsg={'Title must be 3 characters long'}
-        />
         <MultiLineInput
           value={note}
           setValue={setNote}
           placeHolder="Text Input here"></MultiLineInput>
       </View>
       <View style={styles.footerCmponent}>
-        <Button
-          func={() => saveNote(note, noteTitle)}
-          text="save note"></Button>
+        {noteId ? (
+          <Button func={() => edit(note)} text="Edit note"></Button>
+        ) : (
+          <Button func={() => save(note)} text="save note"></Button>
+        )}
       </View>
     </View>
   );
 };
 
-export default TakeNote;
+export default AddNote;
 
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    flex: 1,
+    height: '100%',
     justifyContent: 'center',
     alignContent: 'center',
     alignItems: 'center',
     textAlign: 'center',
   },
   headingCmponent: {
-    flex: 2,
+    height: '25%',
     textAlign: 'center',
     alignItems: 'center',
     justifyContent: 'center',
@@ -106,14 +130,15 @@ const styles = StyleSheet.create({
     fontSize: 46,
   },
   bodyComponent: {
-    flex: 4,
+    height: '50%',
     justifyContent: 'space-evenly',
     alignItems: 'center',
     alignContent: 'center',
     width: '100%',
   },
   footerCmponent: {
-    flex: 2,
+    height: '25%',
+    marginVertical: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',

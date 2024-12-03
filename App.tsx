@@ -11,8 +11,12 @@ import {
   NavigationContainer,
   DarkTheme,
   DefaultTheme,
+  useNavigation,
 } from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {
+  createNativeStackNavigator,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
 import {
   SafeAreaView,
   ScrollView,
@@ -33,37 +37,45 @@ import {
 import Login from './src/screens/Login';
 import Signup from './src/screens/Signup';
 import HomePage from './src/screens/HomePage';
-import TakeNote from './src/screens/TakeNote';
+import TakeNote from './src/screens/AddNote';
+import {createStackNavigator} from '@react-navigation/stack';
+import {RootStackParamList} from './types';
 
 function App(): React.JSX.Element {
   const theme = useColorScheme();
-  const Stack = createNativeStackNavigator();
+  // const Stack = createNativeStackNavigator();
+  const RootStack = createNativeStackNavigator<RootStackParamList>();
   const isLoggedIn = false;
 
   return (
     <NavigationContainer theme={theme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen
+      <RootStack.Navigator initialRouteName="Login">
+        <RootStack.Screen
           name="Login"
           component={Login}
           options={{headerShown: false}}
         />
-        <Stack.Screen
+        <RootStack.Screen
           name="Signup"
           component={Signup}
           options={{headerShown: false}}
         />
-        <Stack.Screen
+        <RootStack.Screen
           name="HomePage"
           component={HomePage}
-          options={{headerShown: true}}
+          options={{
+            headerShown: true,
+          }}
         />
-        <Stack.Screen
+        <RootStack.Screen
           name="TakeNote"
           component={TakeNote}
-          options={{headerShown: false}}
+          options={{
+            headerShown: true,
+            headerTitleAlign: 'center',
+          }}
         />
-      </Stack.Navigator>
+      </RootStack.Navigator>
     </NavigationContainer>
   );
 }

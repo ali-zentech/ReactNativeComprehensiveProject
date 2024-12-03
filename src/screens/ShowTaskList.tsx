@@ -13,54 +13,39 @@ import {
   useTheme,
 } from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import Button from './Button';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {getAllNotes} from '../services/AsyncStorageNotes';
 
 const ShowTaskList = () => {
   const colors = useTheme().colors;
-  const [taskList, setTaskList] = useState<string[]>([]);
+  const [taskList, setTaskList] = useState<string[][]>([]);
   const navigator = useNavigation<NativeStackNavigationProp<ParamListBase>>();
 
-  function navigateToTakeNote() {
-    navigator.push('TakeNote', {noteId: ''});
-  }
-
   useFocusEffect(() => {
-    // Fetch all keys and update the task list
     const fetchTasks = async () => {
-      try {
-        const list = await AsyncStorage.getAllKeys();
-        if (list) {
-          setTaskList([...list]);
-        }
-      } catch (error) {
-        console.error('Error fetching tasks:', error);
-      }
+      const list = await getAllNotes();
+      setTaskList([...list]);
     };
-
-    fetchTasks(); // Empty dependency array ensures this effect runs only once on focus
+    fetchTasks();
   });
-
   return (
     <View style={styles.container}>
       <ScrollView>
         {taskList.map((val, index) => (
           <TouchableOpacity
-            key={val}
+            key={val[0] + index}
             onPress={() => {
-              navigator.push('TakeNote', {noteId: val});
+              navigator.push('TakeNote', {noteId: val[0]});
             }}
             style={[
               styles.listitem,
               {backgroundColor: colors.border, borderColor: colors.border},
             ]}>
             <Text style={[styles.itemTitle, {color: colors.text}]}>
-              {val.split('||')[0]}
+              {val[1]}
             </Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
-      <Button func={navigateToTakeNote} text="Note Taking App" />
     </View>
   );
 };
@@ -84,9 +69,15 @@ const styles = StyleSheet.create({
   },
   itemTitle: {
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 20,
   },
 });
 function async(): void {
+  throw new Error('Function not implemented.');
+}
+function useCallback(
+  arg0: () => void,
+  arg1: string[][],
+): () => undefined | void | (() => void) {
   throw new Error('Function not implemented.');
 }
