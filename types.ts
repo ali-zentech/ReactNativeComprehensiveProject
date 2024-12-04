@@ -5,6 +5,8 @@ export type RootStackParamList = {
   HomePage: undefined;
   Login: undefined;
   Signup: undefined;
+  NoteTakingApp: undefined;
+  Counter: undefined;
   TakeNote: {noteId: string | undefined};
 };
 export type NotePramsList = RouteProp<RootStackParamList, 'TakeNote'>;

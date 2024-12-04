@@ -55,9 +55,6 @@ const AddNote = () => {
               ) : (
                 <></>
               ),
-            headerLeft: () => (
-              <InlineButton text={'Back'} func={() => NavigateBack()} />
-            ),
           });
         });
       } catch (error) {}

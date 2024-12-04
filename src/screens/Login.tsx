@@ -5,6 +5,9 @@ import Input from '../components/Input';
 import Button from '../components/Button';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../types';
+import {useDispatch, useSelector} from 'react-redux';
+import {login} from '../redux/features/components/AuthSlice';
+import {AppDispatch, RootState, useAppDispatch} from '../redux/store';
 
 const Login = () => {
   const colors = useTheme().colors;
@@ -13,8 +16,18 @@ const Login = () => {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [showError, setShowError] = useState(null);
+  const dispatch = useDispatch<AppDispatch>();
+
   function navigate() {
     navigator.popTo('HomePage');
+  }
+
+  function handleLogin() {
+    const params = {
+      username: username,
+      password: password,
+    };
+    dispatch(login(params));
   }
   return (
     <View style={styles.container}>
@@ -46,7 +59,7 @@ const Login = () => {
             regex={new RegExp(/^[a-zA-Z0-9]{6,}$/)}
             errorMsg={'Password must be alphanumeric 6 characters'}
           />
-          <Button func={navigate} text="Login Now"></Button>
+          <Button func={() => handleLogin()} text="Login Now"></Button>
         </View>
         <TouchableOpacity>
           <Text style={styles.textNavigate}> Forgot Password ?</Text>

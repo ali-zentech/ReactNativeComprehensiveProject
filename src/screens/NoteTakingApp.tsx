@@ -14,12 +14,22 @@ import {
 } from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {getAllNotes} from '../services/AsyncStorageNotes';
+import InlineButton from '../components/InlineButton';
 
-const ShowTaskList = () => {
+const NoteTakingApp = () => {
   const colors = useTheme().colors;
   const [taskList, setTaskList] = useState<string[][]>([]);
   const navigator = useNavigation<NativeStackNavigationProp<ParamListBase>>();
-
+  function navigateToAddNote() {
+    navigator.push('TakeNote', {noteId: undefined});
+  }
+  useEffect(() => {
+    navigator.setOptions({
+      headerRight: () => (
+        <InlineButton text={'Add Note'} func={() => navigateToAddNote()} />
+      ),
+    });
+  }, []);
   useFocusEffect(() => {
     const fetchTasks = async () => {
       const list = await getAllNotes();
@@ -50,7 +60,7 @@ const ShowTaskList = () => {
   );
 };
 
-export default ShowTaskList;
+export default NoteTakingApp;
 
 const styles = StyleSheet.create({
   container: {

@@ -3,27 +3,25 @@ import React, {useEffect} from 'react';
 import {ParamListBase, useNavigation, useTheme} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import Button from '../components/Button';
-import ShowTaskList from './ShowTaskList';
 import {RootStackParamList} from '../../types';
-import InlineButton from '../components/InlineButton';
 
 const HomePage = () => {
   const colors = useTheme().colors;
   const navigator =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  function navigateToAddNote() {
-    navigator.push('TakeNote', {noteId: undefined});
-  }
-  useEffect(() => {
-    navigator.setOptions({
-      headerRight: () => (
-        <InlineButton text={'Add Note'} func={() => navigateToAddNote()} />
-      ),
-    });
-  }, []);
+
   return (
     <View style={[styles.container, {backgroundColor: colors.background}]}>
-      <ShowTaskList />
+      <Button
+        text="Counter App"
+        func={() => {
+          navigator.navigate('Counter');
+        }}></Button>
+      <Button
+        text={'Note Taking App'}
+        func={() => {
+          navigator.navigate('NoteTakingApp');
+        }}></Button>
     </View>
   );
 };
