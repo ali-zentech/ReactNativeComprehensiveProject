@@ -25,9 +25,6 @@ const Signup = () => {
     navigator.popTo('HomePage');
   }
   return (
-    // <KeyboardAvoidingView
-    //   style={styles.container}
-    //   behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
     <View style={styles.container}>
       <View style={styles.headingCmponent}>
         <Text style={[styles.heading1, {color: colors.text}]}>Sign Up</Text>
@@ -43,32 +40,24 @@ const Signup = () => {
             value={username}
             setValue={setUsername}
             secure={false}
-            regex={new RegExp(/^[a-zA-Z0-9]{3,}$/)}
-            errorMsg={'Username atleast 3 alphanumeric characters'}
           />
           <Input
             placeHolder="Email"
             value={email}
             setValue={setEmail}
             secure={false}
-            regex={new RegExp(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)}
-            errorMsg={'Email format incorrect'}
           />
           <Input
             placeHolder="Password"
             value={password}
             setValue={setPassword}
             secure={true}
-            regex={new RegExp(/^[a-zA-Z0-9]{6,}$/)}
-            errorMsg={'Password must be alphanumeric 6 characters'}
           />
           <Input
             placeHolder="Confirm Password"
             value={confirmPassword}
             setValue={setConfirmPassword}
             secure={true}
-            regex={new RegExp(/^[a-zA-Z0-9]{6,}$/)}
-            errorMsg={'Password must be alphanumeric 6 characters'}
           />
           <Button func={navigate} text="Signup Now"></Button>
         </View>
@@ -96,7 +85,6 @@ const Signup = () => {
         </TouchableOpacity>
       </View>
     </View>
-    // </KeyboardAvoidingView>
   );
 };
 

@@ -2,6 +2,7 @@ import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {API} from '../../../apis';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {act} from 'react';
+import {errorLogsToast} from '../../../services/RegexCheckAndErrors';
 
 type LoginParams = {
   username: string;
@@ -35,7 +36,7 @@ export const login = createAsyncThunk<UserData, LoginParams>(
       const response = await API.post('auth/login', params);
       return response.data;
     } catch (error) {
-      console.log(' Error in AuthSlice', error);
+      errorLogsToast('Invalid credentials');
       return thunkApi.rejectWithValue(error);
     }
   },
@@ -48,14 +49,13 @@ const AuthSlice = createSlice({
     // login case
     builder.addCase(login.pending, state => {
       state.isLoading = true;
-    }); // pending pe status hai tou action a aam nhi hai warna (state, action)
+    }); // pending pe status hai tou action ka kaam nhi hai warna (state, action)
     builder.addCase(login.fulfilled, (state, action) => {
       state.isSuccess = true;
       state.isLoading = false;
       state.userData = action.payload;
     });
     builder.addCase(login.rejected, (state, action) => {
-      console.log(action.error);
       state.isError = true;
       state.isLoading = false;
     });

@@ -1,4 +1,10 @@
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  ToastAndroid,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React, {useState} from 'react';
 import {ParamListBase, useNavigation, useTheme} from '@react-navigation/native';
 import Input from '../components/Input';
@@ -8,6 +14,11 @@ import {RootStackParamList} from '../../types';
 import {useDispatch, useSelector} from 'react-redux';
 import {login} from '../redux/features/components/AuthSlice';
 import {AppDispatch, RootState, useAppDispatch} from '../redux/store';
+import {
+  errorLogsToast,
+  passwordMatch,
+  usernameMatch,
+} from '../services/RegexCheckAndErrors';
 
 const Login = () => {
   const colors = useTheme().colors;
@@ -18,16 +29,20 @@ const Login = () => {
   const [showError, setShowError] = useState(null);
   const dispatch = useDispatch<AppDispatch>();
 
-  function navigate() {
-    navigator.popTo('HomePage');
-  }
-
   function handleLogin() {
-    const params = {
-      username: username,
-      password: password,
-    };
-    dispatch(login(params));
+    try {
+      if (usernameMatch(username) && passwordMatch(password)) {
+        const params = {
+          username: username,
+          password: password,
+        };
+        dispatch(login(params));
+      } else {
+        errorLogsToast('Username and password 6 chars long and alphanumeric ');
+      }
+    } catch (error) {
+      errorLogsToast('UnExpected error occured');
+    }
   }
   return (
     <View style={styles.container}>
@@ -48,16 +63,12 @@ const Login = () => {
             value={username}
             setValue={setUsername}
             secure={false}
-            regex={new RegExp(/^[a-zA-Z0-9]{3,}$/)}
-            errorMsg={'Username must be 3 characters long'}
           />
           <Input
             placeHolder="Password"
             value={password}
             setValue={setPassword}
             secure={true}
-            regex={new RegExp(/^[a-zA-Z0-9]{6,}$/)}
-            errorMsg={'Password must be alphanumeric 6 characters'}
           />
           <Button func={() => handleLogin()} text="Login Now"></Button>
         </View>

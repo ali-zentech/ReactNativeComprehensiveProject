@@ -7,15 +7,11 @@ const Input = ({
   setValue,
   placeHolder,
   secure,
-  regex,
-  errorMsg,
 }: {
   value: string;
   setValue: (value: string) => void;
   placeHolder: string;
   secure: boolean;
-  regex: RegExp;
-  errorMsg: string;
 }) => {
   const colors = useTheme().colors;
 
